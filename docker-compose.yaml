@@ -1,0 +1,13 @@
+services:
+  iperf3-webui:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: iperf3-webui
+    container_name: iperf3-webui
+    hostname: iperf3-webui
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./env.yaml:/app/env.yaml
+    restart: unless-stopped
