@@ -81,7 +81,7 @@ def test():
 
 @app.route("/proxy/iperf3-csv")
 def proxy_csv():
-    url = "https://export.iperf3serverlist.net/listed_iperf3_servers.csv"
+    url = "https://export.iperf3serverlist.net/maddydev-glitch.csv"
     resp = requests.get(url)
     return Response(resp.content, content_type="text/csv")
 
