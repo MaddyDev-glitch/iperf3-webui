@@ -39,9 +39,9 @@ runBtn.addEventListener('click', async () => {
 
         eventSource.onmessage = (event) => {
             if (parseFloat(event.data) < 0) {
-                document.querySelector(".status").textContent = "Status: Complete";
+                document.querySelector(".status").textContent = "Complete";
                 eventSource.close();
-                return;
+                // return;
             }
 
             const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : 0;
@@ -50,7 +50,7 @@ runBtn.addEventListener('click', async () => {
                 eventSource.close();
             }
             else if (event.data === "server is busy"){
-                document.querySelector(".status").textContent = "Status: Server is Busy";
+                document.querySelector(".status").textContent = "Server is Busy";
             }
             else {
                 let bandwidthValue = parseFloat(event.data);
@@ -61,12 +61,12 @@ runBtn.addEventListener('click', async () => {
                         state.bandwidthCount += 1;
                         if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
 
-                        document.querySelector(".status").textContent = "Status: Running";
+                        document.querySelector(".status").textContent = "Running";
                         resultEl.textContent += event.data + '\n';
                     } else {
-                        document.querySelector(".status").textContent = "Status: Complete";
-                        document.querySelector(".avg_speed").textContent = `AVG: ${avg} ${units}`;
-                        document.querySelector(".max_speed").textContent = `MAX: ${state.maxBandwidth} ${units}`;
+                        document.querySelector(".status").textContent = "Complete";
+                        document.querySelector(".avg_speed").textContent = `${avg} ${units}`;
+                        document.querySelector(".max_speed").textContent = `${state.maxBandwidth} ${units}`;
                     }
                 }
             }

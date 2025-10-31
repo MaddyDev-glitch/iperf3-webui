@@ -5,19 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speedtest GUI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
     <script src="/static/js/gauge.min.js"></script>
     <style>
         :root {
-        --primary: {{ theme.primary|default('#ff0000') }};
-        --secondary: {{ theme.secondary|default('#ffffff') }};
-        --background: {{ theme.background|default('#ffffff') }};
-        --text: {{ theme.text|default('#000000') }};
-        --speedometer_gradient_1: {{theme.speedometer_gradient_1|default('#c3dcf4')}};
-        --speedometer_gradient_2: {{theme.speedometer_gradient_2|default('#2caee8')}};
-        --speedometer_gradient_3: {{theme.speedometer_gradient_3|default('#0099dc')}};
-        }
+    --primary: {{ theme.primary|default('#6366f1') }};
+    --secondary: {{ theme.secondary|default('#1e1b4b') }};
+    --background: {{ theme.background|default('#0f172a') }};
+    --text: {{ theme.text|default('#ffffff') }};
+    --card_bg: {{ theme.card_bg|default('rgba(255, 255, 255, 0.05)') }};
+    --card_border: {{ theme.card_border|default('rgba(255, 255, 255, 0.1)') }};
+    --input_bg: {{ theme.input_bg|default('rgba(255, 255, 255, 0.08)') }};
+    --hover_bg: {{ theme.hover_bg|default('rgba(255, 255, 255, 0.12)') }};
+    --speedometer_gradient_1: {{theme.speedometer_gradient_1|default('#8b5cf6')}};
+    --speedometer_gradient_2: {{theme.speedometer_gradient_2|default('#6366f1')}};
+    --speedometer_gradient_3: {{theme.speedometer_gradient_3|default('#3b82f6')}};
+}
 
         body {
             background: var(--background);
@@ -34,9 +38,8 @@
             color: #fff;
         }
 
-        /* Apply Montserrat font to the entire body */
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         .field label,
@@ -44,139 +47,183 @@
         #output h2,
         footer p {
             font-weight: 600;
-            /* Medium weight for labels and buttons */
         }
 
         .number div {
-            font-weight: 400;
-            /* Regular for smaller text */
+            font-weight: 700;
         }
     </style>
 </head>
 
 <body>
     <header>
-        <div id="logo-gallery" class="logo-banner">
-            <!-- <p>Add image paths in the env.yaml file </p> -->
-            {% if logos %}
-            {% for logo in logos %}
-            <img class="logo" src="{{ logo }}" alt="Logo">
-            {% endfor %}
-            {% else %}
-            <!-- <p>No logos to display.</p> -->
-            {% endif %}
+        <div class="header-content">
+            <div id="logo-gallery" class="logo-banner">
+                {% if logos %}
+                {% for logo in logos %}
+                <img class="logo" src="{{ logo }}" alt="Logo">
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="title-wrapper">
+                <div class="title">
+                    <h1>iPerf3 <span class="gradient-text">Speed Test</span></h1>
+                    <span class="version-badge">v1.3.0.4</span>
+                </div>
+                <p id="iperf_version" class="subtitle">Loading version...</p>
+            </div>
+            <div class="gittag">
+                <span class="tag-label">Latest Release:</span>
+                <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MaddyDev-glitch/iperf3-webui">
+            </div>
         </div>
-        <div class="title">
-            <h1>Iperf3 GUI</h1>
-            <div style="width: 10px;"></div>
-            <h3> v1.3.0.4</h3>
-            
-        </div>
-        
-        <p id="iperf_version">Loading version...</p>
-        <div class="gittag">
-            <p id="iperf_version" style="margin-right: 10px;">Latest GitHub Tag:</p>
-            <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MaddyDev-glitch/iperf3-webui">
-        </div>
-        
-
     </header>
 
     <main class="container">
-        <div class="dial">
-
-        </div>
-
-        <div class="selectors">
-            <button id="openPopupBtn">Select Public iperf3 Server</button>
-            <div id="selectedServer"></div>
-            <div id="overlay"></div>
-            <div id="popup">
-                <h2>Select a Server</h2>
-                <input type="text" id="searchInput" placeholder="Search...">
-                <table id="csvTable">
-                    <thead></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="field flex2">
-                <div class="flex2-childL">
-                    <label for="target">Target IP</label>
-                    <input type="text" id="target" value="{{ default_target }}" placeholder="Target IP">
-                </div>
-                <div class="flex2-childR">
-                    <label for="port">Port</label>
-                    <input type="text" id="port" value="{{ default_port }}" placeholder="5201">
-                </div>
-
-            </div>
-            <div class="field">
-                <label for="protocol">Protocol</label>
-                <div class="toggle-container">
-                    <button id="tcpBtn" class="toggle-btn active">TCP</button>
-                    <button id="udpBtn" class="toggle-btn">UDP</button>
+        <!-- Speedometer Section -->
+        <div class="speedometer-section">
+            <div class="speedometer-container">
+                <canvas id="speedometer" class="speedometer"></canvas>
+                <div class="number">
+                    <div id="current-value">0</div>
+                    <div class="units">Mbps</div>
                 </div>
             </div>
-            <div class="field">
-                <label for="protocol">Mode</label>
-                <div class="toggle-container">
-                    <button id="uploadBtn" class="toggle-btn active">Upload</button>
-                    <button id="downloadBtn" class="toggle-btn">Download</button>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value status">Ready</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average</div>
+                    <div class="stat-value avg_speed">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Maximum</div>
+                    <div class="stat-value max_speed">--</div>
                 </div>
             </div>
-            <div class="field">
-                <label for="protocol">Units</label>
-                <div class="toggle-container">
-                    <button id="Kbits" class="unit-btn toggle-btn ">Kbits</button>
-                    <button id="Mbits" class="unit-btn toggle-btn active">Mbits</button>
-                    <button id="Gbits" class="unit-btn toggle-btn">Gbits</button>
+        </div>
 
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <div class="card">
+                <button id="openPopupBtn" class="server-select-btn">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                    </svg>
+                    Select Public iPerf3 Server
+                </button>
+                <div id="selectedServer"></div>
+            </div>
+
+            <div class="card">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <label for="target">Target IP</label>
+                        <input type="text" id="target" value="{{ default_target }}" placeholder="Enter IP address">
+                    </div>
+                    <div class="input-wrapper input-small">
+                        <label for="port">Port</label>
+                        <input type="text" id="port" value="{{ default_port }}" placeholder="5201">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Protocol</label>
+                    <div class="toggle-container">
+                        <button id="tcpBtn" class="toggle-btn active">
+                            <span class="toggle-label">TCP</span>
+                        </button>
+                        <button id="udpBtn" class="toggle-btn">
+                            <span class="toggle-label">UDP</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Mode</label>
+                    <div class="toggle-container">
+                        <button id="uploadBtn" class="toggle-btn active">
+                            <svg class="toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                            </svg>
+                            <span class="toggle-label">Upload</span>
+                        </button>
+                        <button id="downloadBtn" class="toggle-btn">
+                            <svg class="toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                            </svg>
+                            <span class="toggle-label">Download</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Units</label>
+                    <div class="toggle-container three-col">
+                        <button id="Kbits" class="unit-btn toggle-btn">Kbits</button>
+                        <button id="Mbits" class="unit-btn toggle-btn active">Mbits</button>
+                        <button id="Gbits" class="unit-btn toggle-btn">Gbits</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="streams">Parallel Streams</label>
+                    <input type="number" id="streams" min="1" max="10" value="8">
+                </div>
+
+                <div class="field" id="bandwidth-field" style="display: none;">
+                    <label for="bandwidth">Bandwidth per Stream <span class="hint">(0 for maximum)</span></label>
+                    <input type="string" id="bandwidth" value="0">
                 </div>
             </div>
 
-
-            <div class="field">
-                <label for="streams">Streams</label>
-                <input type="number" id="streams" min="1" max="10" value="8">
-            </div>
-
-            <div class="field" id="bandwidth-field" style="display: none;">
-                <label for="bandwidth">Bandwidth per stream (set to 0 for max bw)</label>
-                <input type="string" id="bandwidth" value="0">
-            </div>
+            <button id="runBtn" class="run-btn">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                Run Speed Test
+            </button>
         </div>
 
-        <button id="runBtn">Run iPerf3</button>
-        <div class="status">
-            Status: Ready
-        </div>
-        <div class="avg_speed">
-            AVG: --
-        </div>
-        <div class="max_speed">
-            MAX: --
-        </div>
-        <!-- Speedometer Dial Section -->
-        <div class="speedometer-container">
-            <canvas id="speedometer" class="speedometer"></canvas>
-            <div class="number">
-                <div id="current-value">0</div>
-                <div class="units">Mbps</div>
-            </div>
-        </div>
-
-
-        <div id="output">
-            <h2>Output</h2>
+        <!-- Output Section -->
+        <div class="card output-card" id="output">
+            <h2>
+                <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Output
+            </h2>
             <pre id="result">Waiting for input...</pre>
         </div>
     </main>
 
+    <!-- Server Selection Popup -->
+    <div id="overlay"></div>
+    <div id="popup" class="popup">
+        <div class="popup-header">
+            <h2>Select Server</h2>
+            <button class="close-btn" onclick="document.getElementById('popup').style.display='none'; document.getElementById('overlay').style.display='none';">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <input type="text" id="searchInput" placeholder="Search servers...">
+        <div class="table-container">
+            <table id="csvTable">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2025 <a href="https://github.com/MaddyDev-glitch">MaddyDev-glitch</a></p>
+        <p>Made with 💜 by <a href="https://github.com/MaddyDev-glitch" target="_blank">MaddyDev-glitch</a></p>
     </footer>
 
-    <!-- <script src="/static/script.js"></script> -->
     <script type="module" src="/static/js/main.js"></script>
 </body>
 
