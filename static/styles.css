@@ -1,4 +1,8 @@
 
+html{
+    display: flex;
+    justify-content: space-evenly;
+}
 :root {
     --primary-color: var(--primary);
     --secondary-color: var(--secondary);
