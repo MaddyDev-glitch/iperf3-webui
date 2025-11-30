@@ -20,6 +20,10 @@ document.getElementById('bandwidth').addEventListener('input', () => {
     // console.log('Updated bandwidth:', state.bandwidth);
 });
 
+document.getElementById('continuousToggle').addEventListener('change', (event) => {
+    state.continuousMode = event.target.checked;
+});
+
 
 
 document.getElementById('uploadBtn').addEventListener('click', () => {

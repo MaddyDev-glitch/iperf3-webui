@@ -7,6 +7,7 @@ const state = {
   mode: 'download',          // Default mode
   units: 'Mbps',             // Default unit
   speedtest_state: 'READY',  // Test state: READY or RUNNING
+  continuousMode: false,     // Whether to repeat tests continuously
 
   bandwidthSum: 0,           // Sum of bandwidth values
   bandwidthCount: 0,         // Count of bandwidth samples
@@ -61,6 +62,13 @@ export default {
   },
   set units(value) {
     state.units = value;
+  },
+
+  get continuousMode() {
+    return state.continuousMode;
+  },
+  set continuousMode(value) {
+    state.continuousMode = value;
   },
 
   get speedtest_state() {

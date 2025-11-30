@@ -289,6 +289,19 @@ label {
     font-weight: 400;
 }
 
+.checkbox-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+}
+
+.checkbox-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
 input[type="text"],
 input[type="number"] {
     width: 100%;
@@ -402,6 +415,24 @@ input:focus {
 
 .run-btn:active {
     transform: translateY(0);
+}
+
+.run-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.stop-btn {
+    background: linear-gradient(333deg, #ef4444 10%, #b91c1c 100%);
+}
+
+.button-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .btn-icon {
