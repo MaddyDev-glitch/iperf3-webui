@@ -1,3 +1,15 @@
+#!/usr/bin/env -S uv run --script
+#
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "flask>=3.1.2",
+#     "psutil>=7.1.3",
+#     "pyyaml>=6.0.3",
+#     "requests>=2.32.5",
+# ]
+# ///
+
 import re
 import subprocess
 import threading

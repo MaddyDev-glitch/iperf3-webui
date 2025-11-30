@@ -1,0 +1,12 @@
+[project]
+name = "iperf3-webui"
+version = "0.1.0"
+description = "iPerf3-WebUI is a modern, lightweight, web-based frontend for iPerf3, built using Python 3 and Flask. Run network speed tests easily from any device — macOS, Linux, Windows, or even Android phones (via Termux)."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.2",
+    "psutil>=7.1.3",
+    "pyyaml>=6.0.3",
+    "requests>=2.32.5",
+]
