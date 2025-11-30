@@ -48,7 +48,7 @@ async function runSingleTest(runNumber) {
   if (runNumber === 1) {
     resultEl.textContent = 'Running iPerf3...\n';
   } else {
-    resultEl.textContent += `\n--- Durchlauf ${runNumber} ---\n`;
+    resultEl.textContent += `\n--- Run ${runNumber} ---\n`;
   }
   statusEl.textContent = 'Running';
 
