@@ -54,7 +54,7 @@ function populateTable(data) {
       let dict = {}
       selected += '<div class="bubble-wrap">'
       for (let i = 0; i < headers.length; i++) {
-        if (headers[i] != "IP/HOST") {
+        if (headers[i] != "IP/HOST" && row[i].length > 0) {
           if (headers[i] == "COUNTRY") {
             const countryCode = row[i].toLowerCase(); // e.g., "dz"
             selected += `<div class="bubble">${headers[i]} : <img src="https://flagcdn.com/w40/${countryCode}.png" alt="${row[i]} flag" style="vertical-align: middle; height: 16px;"></div><br>`;
