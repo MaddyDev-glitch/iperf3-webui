@@ -81,9 +81,15 @@ def test():
 
 @app.route("/proxy/iperf3-csv")
 def proxy_csv():
-    url = "https://export.iperf3serverlist.net/maddydev-glitch.csv"
-    resp = requests.get(url)
-    return Response(resp.content, content_type="text/csv")
+    with open("env.yaml") as f:
+        config = yaml.safe_load(f)
+    servers = config.get("servers", None)
+    if servers == None:
+        url = "https://export.iperf3serverlist.net/maddydev-glitch.csv"
+        resp = requests.get(url)
+        return Response(resp.content, content_type="text/csv")
+    else:
+        return Response(servers, content_type="text/csv")
 
 # @app.route("/set_unit", methods=["POST"])
 # def set_unit():
@@ -127,7 +133,7 @@ def run_iperf():
 
     # Run iperf3 in a separate thread to avoid blocking the main thread
     def start_iperf():
-        cmd = ["iperf3", "-c", target, "-p", str(port), "-P", str(streams)]
+        cmd = ["iperf3", "-c", target, "-p", str(port), "-P", str(streams), "--connect-timeout", "5000"]
         if protocol == "udp":
             cmd.append("-u")
             cmd.append("-b")
