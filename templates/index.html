@@ -179,14 +179,30 @@
                     <label for="bandwidth">Bandwidth per Stream <span class="hint">(0 for maximum)</span></label>
                     <input type="string" id="bandwidth" value="0">
                 </div>
+
+                <div class="field checkbox-field">
+                    <label class="checkbox-toggle">
+                        <input type="checkbox" id="continuousToggle">
+                        <span>Continuous measurement</span>
+                    </label>
+                    <div class="hint">Automatically start new runs until you stop.</div>
+                </div>
             </div>
 
-            <button id="runBtn" class="run-btn">
-                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-                Run Speed Test
-            </button>
+            <div class="button-row">
+                <button id="runBtn" class="run-btn">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Run Speed Test
+                </button>
+                <button id="stopBtn" class="run-btn stop-btn" type="button">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Stop
+                </button>
+            </div>
         </div>
 
         <!-- Output Section -->
